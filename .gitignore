@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
+.env.local
+.ipynb_checkpoints/
+*.log
+.DS_Store
+
+# Large dataset (train locally; do not deploy)
+US_Accidents_March23.csv
+data/
