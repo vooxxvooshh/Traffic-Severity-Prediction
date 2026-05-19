@@ -17,3 +17,6 @@ app.db
 # Large dataset (train locally; do not deploy)
 US_Accidents_March23.csv
 data/
+
+traffic_model.pkl
+model_artifacts.pkl
