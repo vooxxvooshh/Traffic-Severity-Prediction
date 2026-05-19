@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign up — Traffic Severity Predictor</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/auth.css" />
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <a href="/" class="logo auth-logo">
+      <span class="logo-icon" aria-hidden="true">🚦</span>
+      TrafficSeverity AI
+    </a>
+    <h1>Create account</h1>
+    <p class="auth-subtitle">Sign up to use the severity prediction dashboard.</p>
+
+    <div id="auth-error" class="auth-alert hidden" role="alert"></div>
+
+    <form id="signup-form" class="auth-form" novalidate>
+      <div class="form-group">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required placeholder="Jane Doe" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8" placeholder="At least 8 characters" />
+      </div>
+      <div class="form-group">
+        <label for="confirm_password">Confirm password</label>
+        <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" required minlength="8" placeholder="Repeat password" />
+      </div>
+      <button type="submit" class="btn btn-primary auth-submit">Create account</button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="/login">Log in</a></p>
+  </main>
+  <script src="/static/js/auth.js"></script>
+</body>
+</html>

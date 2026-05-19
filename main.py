@@ -1,27 +1,23 @@
-# main.py
-
+from evaluation import save_comparison_table, save_metrics_json
 from preprocessing import load_and_preprocess_data
-from training import train_model, save_model, save_weather_encoder
-from evaluation import evaluate_model
+from training import run_full_training_pipeline
 
-DATA_PATH = "data/US_Accidents_March23.csv"
 
 def main():
-
     print("\n--- LOADING & PREPROCESSING DATA ---")
-    X_train, X_test, y_train, y_test, features, weather_encoder = load_and_preprocess_data(DATA_PATH)
+    data = load_and_preprocess_data()
+    print("Class distribution:", data["artifacts"]["class_distribution"])
 
-    print("\n--- TRAINING MODEL ---")
-    model = train_model(X_train, y_train)
+    print("\n--- TRAINING & MODEL COMPARISON ---")
+    _, best_metrics, comparison_rows, _ = run_full_training_pipeline(data)
 
-    print("\n--- SAVING MODEL ---")
-    save_model(model)
-    save_weather_encoder(weather_encoder)
-
-    print("\n--- EVALUATING MODEL ---")
-    y_pred = evaluate_model(model, X_test, y_test)
+    save_comparison_table(comparison_rows)
+    save_metrics_json(best_metrics)
 
     print("\nPROJECT COMPLETED SUCCESSFULLY!")
+    print(f"Best test accuracy: {best_metrics['accuracy']:.4f}")
+    print(f"Best test F1 (macro): {best_metrics['f1_macro']:.4f}")
+
 
 if __name__ == "__main__":
     main()

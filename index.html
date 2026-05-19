@@ -18,7 +18,8 @@
         <ul class="nav">
           <li><a href="#features">Features</a></li>
           <li><a href="#how-it-works">How it works</a></li>
-          <li><a href="#predict" class="nav-cta">Try predictor</a></li>
+          <li><a href="/login">Log in</a></li>
+          <li><a href="/signup" class="nav-cta">Sign up</a></li>
         </ul>
       </nav>
     </div>
@@ -34,8 +35,8 @@
           may become — powered by a trained Random Forest model.
         </p>
         <div class="hero-actions">
-          <a href="#predict" class="btn btn-primary">Get prediction</a>
-          <a href="#how-it-works" class="btn btn-secondary">Learn more</a>
+          <a href="/signup" class="btn btn-primary">Get started</a>
+          <a href="/login" class="btn btn-secondary">Log in</a>
         </div>
       </div>
       <aside class="hero-visual" aria-label="Project highlights">
@@ -113,103 +114,12 @@
       </div>
     </section>
 
-    <section id="predict" class="predict-section">
-      <div class="section-inner">
-        <header class="section-header">
-          <h2>Try the predictor</h2>
-          <p>Fill in the fields below with conditions at the incident location.</p>
-        </header>
-
-        <div class="predict-layout">
-          <article class="predict-form-card">
-            <h3>Incident details</h3>
-            <p>All fields are required unless marked optional.</p>
-
-            <form id="predict-form" novalidate>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="temperature">Temperature (°F)</label>
-                  <input type="number" id="temperature" name="temperature" step="0.1" value="72" required />
-                </div>
-                <div class="form-group">
-                  <label for="humidity">Humidity (%)</label>
-                  <input type="number" id="humidity" name="humidity" step="0.1" min="0" max="100" value="55" required />
-                </div>
-                <div class="form-group">
-                  <label for="visibility">Visibility (mi)</label>
-                  <input type="number" id="visibility" name="visibility" step="0.1" min="0" value="10" required />
-                </div>
-                <div class="form-group">
-                  <label for="wind_speed">Wind speed (mph)</label>
-                  <input type="number" id="wind_speed" name="wind_speed" step="0.1" min="0" value="8" required />
-                </div>
-                <div class="form-group full-width">
-                  <label for="weather">Weather condition</label>
-                  <select id="weather" name="weather" required>
-                    <option value="Clear">Clear</option>
-                    <option value="Cloudy">Cloudy</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Mostly Cloudy">Mostly Cloudy</option>
-                    <option value="Partly Cloudy">Partly Cloudy</option>
-                    <option value="Overcast">Overcast</option>
-                    <option value="Light Rain">Light Rain</option>
-                    <option value="Rain">Rain</option>
-                    <option value="Heavy Rain">Heavy Rain</option>
-                    <option value="Light Snow">Light Snow</option>
-                    <option value="Snow">Snow</option>
-                    <option value="Fog">Fog</option>
-                    <option value="Haze">Haze</option>
-                    <option value="Thunder">Thunder</option>
-                    <option value="Thunderstorm">Thunderstorm</option>
-                    <option value="Scattered Clouds">Scattered Clouds</option>
-                  </select>
-                </div>
-                <div class="form-group full-width">
-                  <span class="checkbox-section-label">Road &amp; infrastructure</span>
-                  <div class="checkbox-row">
-                    <label class="checkbox-label">
-                      <input type="checkbox" id="amenity" name="amenity" />
-                      Near amenity
-                    </label>
-                    <label class="checkbox-label">
-                      <input type="checkbox" id="bump" name="bump" />
-                      Speed bump
-                    </label>
-                    <label class="checkbox-label">
-                      <input type="checkbox" id="crossing" name="crossing" />
-                      Crossing
-                    </label>
-                    <label class="checkbox-label">
-                      <input type="checkbox" id="junction" name="junction" checked />
-                      Junction
-                    </label>
-                    <label class="checkbox-label">
-                      <input type="checkbox" id="traffic_signal" name="traffic_signal" />
-                      Traffic signal
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Predict severity</button>
-              </div>
-            </form>
-          </article>
-
-          <aside class="result-panel" aria-live="polite">
-            <h3>Prediction result</h3>
-            <div id="result-placeholder" class="result-placeholder">
-              Submit the form to see predicted accident severity here.
-            </div>
-            <div id="result-error" class="result-error hidden" role="alert"></div>
-            <div id="result-content" class="result-content hidden">
-              <span id="severity-badge" class="severity-badge">Severity —</span>
-              <p id="result-level" class="result-level">—</p>
-              <p id="result-desc" class="result-desc">—</p>
-            </div>
-          </aside>
-        </div>
-      </div>
+    <section class="section-inner" style="text-align:center;padding-bottom:4rem;">
+      <header class="section-header">
+        <h2>Ready to predict?</h2>
+        <p>Create an account to access the secured prediction dashboard.</p>
+      </header>
+      <a href="/signup" class="btn btn-primary">Sign up free</a>
     </section>
   </main>
 
@@ -217,13 +127,13 @@
     <div class="footer-inner">
       <p>&copy; 2026 Traffic Severity Predictor. Built with FastAPI &amp; scikit-learn.</p>
       <ul class="footer-links">
-        <li><a href="#predict">Predictor</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/login">Log in</a></li>
         <li><a href="/health">API health</a></li>
         <li><a href="/docs">API docs</a></li>
       </ul>
     </div>
   </footer>
 
-  <script src="/static/js/app.js"></script>
 </body>
 </html>

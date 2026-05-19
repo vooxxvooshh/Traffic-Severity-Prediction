@@ -5,24 +5,26 @@ const SEVERITY_LABELS = {
   4: { name: "Severe", desc: "Critical impact — major disruption expected." },
 };
 
+function authHeaders() {
+  const token = localStorage.getItem("access_token");
+  const headers = { "Content-Type": "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
+
 async function loadWeatherOptions() {
   const select = document.getElementById("weather");
+  if (!select) return;
   try {
     const res = await fetch("/weather-options");
     if (!res.ok) return;
     const data = await res.json();
-    const preferred = new Set([
-      "Clear", "Cloudy", "Fair", "Mostly Cloudy", "Partly Cloudy", "Overcast",
-      "Light Rain", "Rain", "Heavy Rain", "Light Snow", "Snow", "Fog", "Haze",
-      "Thunder", "Thunderstorm", "Scattered Clouds",
-    ]);
-    const options = data.conditions.filter((c) => preferred.has(c));
-    const list = options.length ? options : data.conditions.slice(0, 20);
-    select.innerHTML = list
+    select.innerHTML = data.conditions
+      .slice(0, 40)
       .map((c) => `<option value="${c}">${c}</option>`)
       .join("");
   } catch {
-    /* keep static fallback options */
+    /* keep defaults */
   }
 }
 
@@ -37,73 +39,91 @@ const level = document.getElementById("result-level");
 const desc = document.getElementById("result-desc");
 
 function showError(message) {
+  if (!errorEl) return;
   errorEl.textContent = message;
   errorEl.classList.remove("hidden");
-  placeholder.classList.remove("hidden");
-  content.classList.add("hidden");
+  placeholder?.classList.remove("hidden");
+  content?.classList.add("hidden");
 }
 
 function hideError() {
-  errorEl.classList.add("hidden");
+  errorEl?.classList.add("hidden");
 }
 
 function showResult(prediction) {
   hideError();
   const info = SEVERITY_LABELS[prediction] || {
     name: `Level ${prediction}`,
-    desc: "Prediction returned from the model.",
+    desc: "Prediction from model.",
   };
-
   badge.textContent = `Severity ${prediction}`;
   badge.className = `severity-badge severity-${prediction}`;
   level.textContent = info.name;
   desc.textContent = info.desc;
-
-  placeholder.classList.add("hidden");
-  content.classList.remove("hidden");
+  placeholder?.classList.add("hidden");
+  content?.classList.remove("hidden");
 }
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  hideError();
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    hideError();
 
-  const payload = {
-    temperature: parseFloat(document.getElementById("temperature").value),
-    humidity: parseFloat(document.getElementById("humidity").value),
-    visibility: parseFloat(document.getElementById("visibility").value),
-    wind_speed: parseFloat(document.getElementById("wind_speed").value),
-    weather_condition: document.getElementById("weather").value,
-    amenity: document.getElementById("amenity").checked,
-    bump: document.getElementById("bump").checked,
-    crossing: document.getElementById("crossing").checked,
-    junction: document.getElementById("junction").checked,
-    traffic_signal: document.getElementById("traffic_signal").checked,
-  };
+    const payload = {
+      temperature: parseFloat(document.getElementById("temperature").value),
+      humidity: parseFloat(document.getElementById("humidity").value),
+      visibility: parseFloat(document.getElementById("visibility").value),
+      wind_speed: parseFloat(document.getElementById("wind_speed").value),
+      precipitation: parseFloat(document.getElementById("precipitation")?.value || 0),
+      pressure: parseFloat(document.getElementById("pressure")?.value || 29.9),
+      distance: parseFloat(document.getElementById("distance")?.value || 0.1),
+      hour: parseInt(document.getElementById("hour")?.value || 12, 10),
+      dayofweek: parseInt(document.getElementById("dayofweek")?.value || 0, 10),
+      state: document.getElementById("state")?.value || "CA",
+      street: document.getElementById("street")?.value || "",
+      weather_condition: document.getElementById("weather").value,
+      sunrise_sunset: document.getElementById("sunrise_sunset")?.value || "Day",
+      amenity: document.getElementById("amenity")?.checked || false,
+      bump: document.getElementById("bump")?.checked || false,
+      crossing: document.getElementById("crossing")?.checked || false,
+      junction: document.getElementById("junction")?.checked || false,
+      traffic_signal: document.getElementById("traffic_signal")?.checked || false,
+    };
 
-  form.classList.add("loading");
+    form.classList.add("loading");
 
-  try {
-    const response = await fetch("/predict", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch("/predict", {
+        method: "POST",
+        headers: authHeaders(),
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      const detail = data.detail;
-      const msg = Array.isArray(detail)
-        ? detail.map((d) => d.msg).join(", ")
-        : detail || "Prediction failed. Please check your inputs.";
-      showError(msg);
-      return;
+      if (response.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+
+      if (!response.ok) {
+        const detail = data.detail;
+        showError(
+          typeof detail === "string"
+            ? detail
+            : Array.isArray(detail)
+              ? detail.map((d) => d.msg).join(", ")
+              : "Prediction failed."
+        );
+        return;
+      }
+
+      showResult(data.prediction);
+    } catch {
+      showError("Could not reach the server.");
+    } finally {
+      form.classList.remove("loading");
     }
-
-    showResult(data.prediction);
-  } catch {
-    showError("Could not reach the server. Try again later.");
-  } finally {
-    form.classList.remove("loading");
-  }
-});
+  });
+}

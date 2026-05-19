@@ -7,6 +7,12 @@ venv/
 .ipynb_checkpoints/
 *.log
 .DS_Store
+app.db
+
+# Keep trained artifacts for deploy
+!traffic_model.pkl
+!model_artifacts.pkl
+!weather_encoder.pkl
 
 # Large dataset (train locally; do not deploy)
 US_Accidents_March23.csv

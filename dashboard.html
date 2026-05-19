@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Traffic Severity Predictor</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/auth.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner dashboard-header">
+      <a href="/" class="logo">
+        <span class="logo-icon" aria-hidden="true">🚦</span>
+        TrafficSeverity AI
+      </a>
+      <div class="user-menu">
+        <span id="user-email" class="user-email"></span>
+        <button type="button" id="logout-btn" class="btn-logout">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="predict-section">
+    <div class="section-inner">
+      <header class="section-header">
+        <h2>Prediction dashboard</h2>
+        <p>Enter incident conditions to predict severity (levels 1–4).</p>
+      </header>
+
+      <div class="predict-layout">
+        <article class="predict-form-card">
+          <h3>Incident details</h3>
+          <form id="predict-form" novalidate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="temperature">Temperature (°F)</label>
+                <input type="number" id="temperature" step="0.1" value="72" required />
+              </div>
+              <div class="form-group">
+                <label for="humidity">Humidity (%)</label>
+                <input type="number" id="humidity" step="0.1" min="0" max="100" value="55" required />
+              </div>
+              <div class="form-group">
+                <label for="visibility">Visibility (mi)</label>
+                <input type="number" id="visibility" step="0.1" min="0" value="10" required />
+              </div>
+              <div class="form-group">
+                <label for="wind_speed">Wind speed (mph)</label>
+                <input type="number" id="wind_speed" step="0.1" min="0" value="8" required />
+              </div>
+              <div class="form-group">
+                <label for="precipitation">Precipitation (in)</label>
+                <input type="number" id="precipitation" step="0.01" min="0" value="0" />
+              </div>
+              <div class="form-group">
+                <label for="pressure">Pressure (in)</label>
+                <input type="number" id="pressure" step="0.01" value="29.9" />
+              </div>
+              <div class="form-group">
+                <label for="distance">Distance (mi)</label>
+                <input type="number" id="distance" step="0.01" min="0" value="0.1" />
+              </div>
+              <div class="form-group">
+                <label for="hour">Hour (0–23)</label>
+                <input type="number" id="hour" min="0" max="23" value="14" required />
+              </div>
+              <div class="form-group">
+                <label for="dayofweek">Day of week (0=Mon)</label>
+                <input type="number" id="dayofweek" min="0" max="6" value="2" required />
+              </div>
+              <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" id="state" maxlength="2" value="CA" required />
+              </div>
+              <div class="form-group full-width">
+                <label for="street">Street / road name</label>
+                <input type="text" id="street" placeholder="e.g. I-95 N or Main St" value="" />
+              </div>
+              <div class="form-group full-width">
+                <label for="weather">Weather condition</label>
+                <select id="weather" required></select>
+              </div>
+              <div class="form-group">
+                <label for="sunrise_sunset">Time of day</label>
+                <select id="sunrise_sunset">
+                  <option value="Day">Day</option>
+                  <option value="Night">Night</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <span class="checkbox-section-label">Road &amp; infrastructure</span>
+                <div class="checkbox-row">
+                  <label class="checkbox-label"><input type="checkbox" id="amenity" /> Amenity</label>
+                  <label class="checkbox-label"><input type="checkbox" id="bump" /> Bump</label>
+                  <label class="checkbox-label"><input type="checkbox" id="crossing" /> Crossing</label>
+                  <label class="checkbox-label"><input type="checkbox" id="junction" checked /> Junction</label>
+                  <label class="checkbox-label"><input type="checkbox" id="traffic_signal" /> Traffic signal</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Predict severity</button>
+            </div>
+          </form>
+        </article>
+
+        <aside class="result-panel" aria-live="polite">
+          <h3>Prediction result</h3>
+          <div id="result-placeholder" class="result-placeholder">
+            Submit the form to see predicted severity.
+          </div>
+          <div id="result-error" class="result-error hidden" role="alert"></div>
+          <div id="result-content" class="result-content hidden">
+            <span id="severity-badge" class="severity-badge">—</span>
+            <p id="result-level" class="result-level">—</p>
+            <p id="result-desc" class="result-desc">—</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/app.js"></script>
+  <script>
+    fetch("/me", { credentials: "include", headers: authHeaders() })
+      .then((r) => r.ok ? r.json() : Promise.reject())
+      .then((u) => { document.getElementById("user-email").textContent = u.email; })
+      .catch(() => { window.location.href = "/login"; });
+  </script>
+</body>
+</html>
